@@ -53,6 +53,7 @@ int main(int argc, char *argv[])
 
     pimpleControl pimple(mesh);
 
+#   include "electrochemicalConstants.H"
 #   include "createFields.H"
 #   include "initContinuityErrs.H"
 #   include "createTimeControls.H"
@@ -69,6 +70,9 @@ int main(int argc, char *argv[])
 
         Info<< "Time = " << runTime.timeName() << nl << endl;
 
+#           include "PsiEqn.H"
+#           include "cEqn.H"
+ 
         // --- PIMPLE loop
         while (pimple.loop())
         {

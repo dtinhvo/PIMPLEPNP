@@ -1,0 +1,57 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | foam-extend: Open Source CFD                    |
+|  \\    /   O peration     | Version:     4.1                                |
+|   \\  /    A nd           | Web:         http://www.foam-extend.org         |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       volScalarField;
+    location    "0";
+    object      Cl;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dimensions      [0 -3 0 0 1 0 0]; // [mol/L] = [kg0⋅m-3⋅s0⋅K0⋅mol1⋅A0⋅cd0]   
+
+cBulk 0.1; 
+
+internalField   uniform $cBulk; 
+ 
+
+boundaryField
+{
+    inlet
+    {
+        type fixedValue;
+        value $cBulk;
+    }
+    outlet
+    {
+        type zeroGradient;
+    }
+    midline
+    {
+        type symmetryPlane;
+    }
+    y 
+    {
+        type empty;
+    }
+    neutralSide
+    {
+        type subgridZeroIonicFlux;
+        value 0;
+    }
+    chargedSide
+    {
+        type subgridZeroIonicFlux;
+        value 0;
+    }
+}
+
+
+// ************************************************************************* //

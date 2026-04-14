@@ -1,0 +1,3 @@
+subgridZeroIonicFlux/subgridZeroIonicFlux.C
+
+LIB = $(FOAM_USER_LIBBIN)/libsubgridZeroIonicFlux

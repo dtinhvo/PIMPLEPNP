@@ -1,0 +1,163 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | foam-extend: Open Source CFD                    |
+|  \\    /   O peration     | Version:     4.1                                |
+|   \\  /    A nd           | Web:         http://www.foam-extend.org         |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      blockMeshDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+//              z                              
+//               ▲                             
+//               │       side                  
+//               │                             
+//    ┌──        xxxxxxxxxxxxxxxxxxxxxxxxx     
+//    │          │                       x     
+//    │        ──┼─►                     x     
+// H/2│  inlet   │                       x  end
+//    │        ────►                     x     
+//    │          │                       x     
+//    │          │ ▲  ▲  ▲  ▲  ▲  ▲  ▲  ▲x     
+//    └──        └─│──│──│──│──│──│──│──│x─►   
+//                 ▼  ▼  ▼  ▼  ▼  ▼  ▼  ▼   x  
+//                      midline                
+//                                             
+//               │                       │     
+//               └───────────────────────┘     
+//                          L                  
+
+elecDict 
+{ 
+#include "$FOAM_CASE/constant/electricProperties"
+} 
+    aspectRatio 7; // TBD this can change depending on ScalingConstant
+    lambda_D $elecDict.lambda_D;
+    ScalingConstant $elecDict.ScalingConstant;
+
+    H #calc "$lambda_D * $ScalingConstant ";
+    nH 20;  // ~2.5 cells in  Debye length
+ 
+    L #calc "$aspectRatio * $H"; 
+        endRatio 0.2;  // compared to N
+        L_startend #calc "$L  * $endRatio"; // lengths either side of charged wall
+        L_wallend #calc "$L - $L_startend" ; // wallend
+
+height #calc "$H/2";
+
+nL #calc "ceil($aspectRatio*$aspectRatio*$nH/($aspectRatio))" ;
+nL_startend #calc "ceil($nL* $endRatio/(1-2* $endRatio) )";
+
+Hscaling 0.25;
+Lgrading #calc "1/$Hscaling*$aspectRatio";
+
+// convertToMeters 1e-2;
+
+vertices
+(
+// y == crosssection
+     (0.0  	        0	        0)   //0
+     ($L_startend  	0	        0)
+     ($L_startend   $height     0)  //2
+     (0  	        $height     0)   
+// top (z) TODO #calc "$height / 2"
+     (0 	        0	        $height)  //4
+     ($L_startend   0	        $height)
+     ($L_startend   $height	    $height) //6
+     (0  	        $height	    $height)  
+
+     ($L_wallend    0	        0)         //8
+     ($L            0	        0) 
+     ($L            $height     0)  //10
+     ($L_wallend    $height     0)
+
+     ($L_wallend    0	        $height)         //12
+     ($L            0	        $height) 
+     ($L            $height      $height)  //14
+     ($L_wallend    $height      $height)
+
+);
+
+blocks
+(
+    hex (0 1 2 3 4 5 6 7) ($nL_startend  $nH 1 ) simpleGrading (1 $Hscaling 1) 
+    hex (1 8 11 2 5 12 15 6) ($nL $nH 1 ) simpleGrading (1 $Hscaling 1) 
+    hex (8 9 10 11 12 13 14 15) ($nL_startend $nH 1) simpleGrading (1 $Hscaling 1) 
+);
+
+edges
+(
+);
+
+boundary
+(
+    inlet
+    {
+        type patch;
+        faces
+        (
+            (0 4 7 3) 
+        );
+    }
+    outlet
+    {
+        type patch;
+        faces
+        (
+            (9 13 14 10)
+        );
+    }
+    midline
+    {
+        type symmetryPlane;
+        faces
+        (
+            (0 1 5 4) 
+            (1 8 12 5)
+            (8 9 13 12)
+        );
+    }
+    y
+    {
+        type empty;
+        faces
+        (
+            (0 1 2 3)
+            (4 5 6 7)
+            (1 8 11 2)
+            (5 12 15 6)
+            (8 9 10 11)
+            (12 13 14 15)
+        );
+    }
+    neutralSide
+    {
+        type patch;
+        faces 
+        (
+            (3 2 6 7) 
+            (11 10 14 15)
+        );
+    }
+    chargedSide
+    {
+        type patch;
+        faces 
+        (
+            (2 11 15 6)
+        );
+    }
+);
+
+mergePatchPairs
+(
+);
+
+
+// ************************************************************************* //

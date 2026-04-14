@@ -1,0 +1,84 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | foam-extend: Open Source CFD                    |
+|  \\    /   O peration     | Version:     4.1                                |
+|   \\  /    A nd           | Web:         http://www.foam-extend.org         |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      fvSchemes;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+ddtSchemes
+{
+    default         CrankNicolson 0.9;
+}
+
+gradSchemes // cellLimited Gauss linear 1 or leastSquares; 
+            // cellLimited Gauss linear 1 seems to allow larger time steps 
+{
+    default         leastSquares; 
+    grad(p)         Gauss linear ; 
+    grad(U)         Gauss linear ; 
+}
+
+divSchemes  // Gauss limitedLinear 1 (old)
+            // or seemlingly no difference:
+            // Gauss linear skewCorrected (new) 
+{
+    default         Gauss linear;
+    div(phi,U)      Gauss linear;
+    div((nuEff*dev(T(grad(U))))) Gauss linear;
+    div(phi,c)   Gauss linear;
+     div(phiU,p)     Gauss linear;
+//     div(phi,Yi_h)   Gauss limitedLinear 1;
+    div((nu*dev2(T(grad(U)))))  Gauss linear;
+    div(((rho*nu)*dev2(T(grad(U)))))    Gauss linear;
+    ciAdvection Gauss linear;
+    div(eMigFlux,Yi) Gauss linear;
+    div(U)              Gauss linear;
+}
+
+laplacianSchemes // Gauss cubic corrected  (old)
+                 // or: 
+                 // Gauss cubic skewCorrected 1 (new) : seems worse - on default makes block interfaces wrong
+{
+    default           Gauss linear corrected;
+//     laplacian(nuEff,U) Gauss linear corrected;
+//     laplacian(rAU,p) Gauss linear corrected;
+//     laplacian(DkEff,k) Gauss linear corrected;
+//     laplacian(DepsilonEff,epsilon) Gauss linear corrected;
+//     laplacian(DREff,R) Gauss linear corrected;
+//     laplacian(DnuTildaEff,nuTilda) Gauss linear corrected;
+//     laplacian(nu,U) Gauss linear corrected;
+    ciDiffusion Gauss linear corrected;
+    ciElectromigration Gauss linear corrected;
+}
+
+interpolationSchemes
+{
+    default         linear;
+    interpolate(U)  linear;
+}
+
+snGradSchemes
+{
+    default         corrected;
+        // default skewCorrected 1; BAD!
+}
+
+couplingSchemes
+{
+    pUIonicLoopIters 1;
+    outerLoopIters 1;   // solver-level loop in each time step 
+    eCouplingIters 1;   // lib-level (PNP) coupling loop between P and NP    
+    poissonIters 1;     // lib-level (PNP) loop of Poisson equation 
+}
+
+// ************************************************************************* //

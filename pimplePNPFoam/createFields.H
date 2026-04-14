@@ -26,8 +26,40 @@ volVectorField U
     mesh
 );
 
-#include "createPhi.H"
+surfaceScalarField phi
+(
+    IOobject
+    (
+        "phi",
+        runTime.timeName(),
+        mesh,
+        IOobject::READ_IF_PRESENT,
+        IOobject::AUTO_WRITE
+    ),
+    linearInterpolate(U) & mesh.Sf()
+);
 
+IOdictionary elecDict ( 
+        IOobject
+        (
+             "electricProperties",
+             mesh.time().constant(),
+             mesh,
+             IOobject::MUST_READ,
+             IOobject::NO_WRITE
+        ));
+volScalarField Psi_E
+(
+    IOobject
+    (
+        "Psi_E",
+        mesh.time().timeName(),
+        mesh,
+        IOobject::MUST_READ,
+        IOobject::AUTO_WRITE
+    ),
+    mesh
+); 
 volScalarField cK
 (
     IOobject
@@ -52,7 +84,14 @@ volScalarField cCl
     ),
     mesh
 );
- 
+dimensionedVector E_field_(
+        elecDict.lookupOrDefault<dimensionedVector>(
+    "E_field",
+    dimensionedVector(
+        "0",
+        dimensionSet(1, 1, -3, 0, 0, -1, 0),
+        vector::zero
+))) ;
 
 label pRefCell = 0;
 scalar pRefValue = 0.0;

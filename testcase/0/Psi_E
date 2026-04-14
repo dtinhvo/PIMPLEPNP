@@ -1,0 +1,66 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | foam-extend: Open Source CFD                    |
+|  \\    /   O peration     | Version:     4.1                                |
+|   \\  /    A nd           | Web:         http://www.foam-extend.org         |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       volScalarField;
+    location    "0";
+    object      Psi_E;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dimensions      [1 2 -3 0 0 -1 0];
+
+Phi 0.1; // thermal Voltage multiplier 
+
+    // physical semi-constant for isothermal: thermal voltage
+    k_B_einv 8.617330337217213e-5 ; // because of k_B being rounded to zero, group it with e : = k_B/e
+    TDict { #include "$FOAM_CASE/0/T" }; T $TDict.T_const;
+    Psi_thermal #calc "$k_B_einv*$T";  // thermal voltage 
+
+// bounds
+zeta #calc "0.001* $Psi_thermal";
+
+internalField   uniform 0; 
+    
+boundaryField
+{
+    inlet
+    {
+        type            fixedValue;
+        value 0;
+    }
+    outlet
+    {
+        type            zeroGradient;
+    }
+    midline
+    {
+        type            symmetryPlane;
+    }
+    y
+    {
+        type            empty;
+    }
+    neutralSide
+    {
+        type            fixedValue;        
+        value           $zeta;
+    }
+    chargedSide
+    {
+        type            fixedValue;        
+        value           $zeta;
+        // type zeroGradient;
+    }
+ 
+}
+
+
+// ************************************************************************* // 
