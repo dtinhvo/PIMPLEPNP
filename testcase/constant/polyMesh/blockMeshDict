@@ -37,24 +37,23 @@ elecDict
 { 
 #include "$FOAM_CASE/constant/electricProperties"
 } 
-    aspectRatio 7; // TBD this can change depending on ScalingConstant
+    nH 30; 
+    aspectRatio 5; // TBD this can change depending on ScalingConstant
     lambda_D $elecDict.lambda_D;
     ScalingConstant $elecDict.ScalingConstant;
 
     H #calc "$lambda_D * $ScalingConstant ";
-    nH 20;  // ~2.5 cells in  Debye length
- 
     L #calc "$aspectRatio * $H"; 
-        endRatio 0.2;  // compared to N
+        endRatio 0.375 ;  // compared to N
         L_startend #calc "$L  * $endRatio"; // lengths either side of charged wall
         L_wallend #calc "$L - $L_startend" ; // wallend
 
 height #calc "$H/2";
 
-nL #calc "ceil($aspectRatio*$aspectRatio*$nH/($aspectRatio))" ;
+nL #calc "ceil(2*$aspectRatio*$nH/($aspectRatio))" ;
 nL_startend #calc "ceil($nL* $endRatio/(1-2* $endRatio) )";
 
-Hscaling 0.25;
+Hscaling 0.1;
 Lgrading #calc "1/$Hscaling*$aspectRatio";
 
 // convertToMeters 1e-2;
@@ -86,9 +85,9 @@ vertices
 
 blocks
 (
-    hex (0 1 2 3 4 5 6 7) ($nL_startend  $nH 1 ) simpleGrading (1 $Hscaling 1) 
-    hex (1 8 11 2 5 12 15 6) ($nL $nH 1 ) simpleGrading (1 $Hscaling 1) 
-    hex (8 9 10 11 12 13 14 15) ($nL_startend $nH 1) simpleGrading (1 $Hscaling 1) 
+    hex (0 1 2 3 4 5 6 7) ($nL_startend  $nH 1 ) simpleGrading (1 1 1) 
+    hex (1 8 11 2 5 12 15 6) ($nL $nH 1 ) simpleGrading (1 1 1) 
+    hex (8 9 10 11 12 13 14 15) ($nL_startend $nH 1) simpleGrading (1 1 1) 
 );
 
 edges

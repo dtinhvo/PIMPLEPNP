@@ -17,155 +17,105 @@ FoamFile
 
 solvers
 {
-    // block solver
-    Up
-    {
-        solver BiCGStab;
-        preconditioner Cholesky;
-
-        tolerance 1e-15;
-        relTol  0.0;
-
-        minIter 1;
-        maxIter 500;
-    } 
-    rho
-    {
-        solver          PCG;
-        preconditioner  DIC;
-        tolerance       1e-15;
-        relTol          0;
-    }
-    
     p
     {
-        solver          BiCGStab;
-        preconditioner  DILU;
-        tolerance       1e-16;
-        relTol          0.; 
+        solver          GAMG;
+        tolerance       1e-06;
+        relTol          0.01;
+        smoother        GaussSeidel;
+        cacheAgglomeration true;
+        nCellsInCoarsestLevel 10;
+        agglomerator    faceAreaPair;
+        mergeLevels     1;
     }
+    c
+    {
+        solver          GAMG;
+        tolerance       1e-06;
+        relTol          0.01;
+        smoother        GaussSeidel;
+        cacheAgglomeration true;
+        nCellsInCoarsestLevel 10;
+        agglomerator    faceAreaPair;
+        mergeLevels     1;
+    }
+ 
+    Psi_E
+    {
+        solver          GAMG;
+        tolerance       1e-06;
+        relTol          0.01;
+        smoother        GaussSeidel;
+        cacheAgglomeration true;
+        nCellsInCoarsestLevel 10;
+        agglomerator    faceAreaPair;
+        mergeLevels     1;
+    }
+ 
+ 
     pFinal
     {
-        solver          BiCGStab;
-        preconditioner  DILU;
-        tolerance       1e-15;
-        relTol          1e-6; 
+        solver          GAMG;
+        tolerance       1e-06;
+        relTol          0;
+        smoother        GaussSeidel;
+        cacheAgglomeration true;
+        nCellsInCoarsestLevel 10;
+        agglomerator    faceAreaPair;
+        mergeLevels     1;
     }
     U
     {
         solver          BiCGStab;
         preconditioner  DILU;
-        tolerance       1e-16;
-        relTol          0.;
+        tolerance       1e-05;
+        relTol          0.1;
     }
     UFinal
     {
         solver          BiCGStab;
         preconditioner  DILU;
-        tolerance       1e-6;
+        tolerance       1e-05;
         relTol          0;
     }
-    Yi
-    {
-        solver          BiCGStab;
-        preconditioner  DILU;
-        tolerance       1e-15;
-        relTol          0.1;
-    }
-    YiFinal
+    k
     {
         solver          BiCGStab;
         preconditioner  DILU;
         tolerance       1e-05;
         relTol          0;
     }
-    
-    he
-    {
-        solver          BiCGStab;
-        preconditioner  DILU;
-        tolerance       1e-05;
-        relTol          0.1;
-    }
-    c
-    { 
-        solver          BICCG;
-        preconditioner  DILU;
-        tolerance       1e-15;
-        relTol          0; 
-    } 
-    Psi_E
-    {
-        solver          BICCG;
-        preconditioner  DILU;
-        tolerance       1e-15;
-        relTol          0; 
-    }
-    hFinal
+    epsilon
     {
         solver          BiCGStab;
         preconditioner  DILU;
         tolerance       1e-05;
         relTol          0;
     }
-//     k
-//     {
-//         solver          BiCGStab;
-//         preconditioner  DILU;
-//         tolerance       1e-05;
-//         relTol          0;
-//     }
-//     epsilon
-//     {
-//         solver          BiCGStab;
-//         preconditioner  DILU;
-//         tolerance       1e-05;
-//         relTol          0;
-//     }
-    advection
-    {
-        solver          BiCGStab;
-        preconditioner  DILU;
-        tolerance       1e-15;
-        relTol          0;
-    }
 }
-blockSolver
-{
-    convergence 1e-16;
-    pRefCell        0;
-    pRefValue       1e5;
-}
-// TODO!! bad location!! change in source: hacky, and in any case get from field values
-fieldBounds
-{
-    U      0;
-    p      1e5 1e5;
-    Psi    0.25; // TODO get from 
-    c      0;
-}
+
 PIMPLE
 {
-    nOuterCorrectors 1;
+    nOuterCorrectors 2;
     nCorrectors     2;
-    nNonOrthogonalCorrectors 1;
+    nNonOrthogonalCorrectors 0;
     pRefCell        0;
-    pRefValue       1e5;
+    pRefValue       0;
 }
 
 relaxationFactors
 {
     equations
     {
-        U               0.8;
+        U               1;
         UFinal          1;
         k               1;
         epsilon         1;
     }
     fields
     {
-        p 0.5;
     }
 }
+
 
 // ************************************************************************* //
