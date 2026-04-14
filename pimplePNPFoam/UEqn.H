@@ -1,11 +1,19 @@
 // Time derivative matrix
 fvVectorMatrix ddtUEqn(fvm::ddt(U));
 
+volVectorField MaxwellForce
+(
+    F*(cK - cCl ) * (fvc::grad(Psi_E) - E_field_ )()  
+);
+const_cast <dimensionSet&> (MaxwellForce.dimensions()) /=  dimMass/dimVolume ; 
+
 // Convection-diffusion matrix
 fvVectorMatrix HUEqn
 (
     fvm::div(phi, U)
   + turbulence->divDevReff()
+    ==
+    MaxwellForce
 );
 
 if (pimple.momentumPredictor())
