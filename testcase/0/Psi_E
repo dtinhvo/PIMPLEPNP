@@ -17,11 +17,9 @@ FoamFile
 
 dimensions      [1 2 -3 0 0 -1 0];
 
-Phi 0.1; // thermal Voltage multiplier 
-
     // physical semi-constant for isothermal: thermal voltage
     k_B_einv 8.617330337217213e-5 ; // because of k_B being rounded to zero, group it with e : = k_B/e
-    TDict { #include "$FOAM_CASE/0/T" }; T $TDict.T_const;
+    T 300;
     Psi_thermal #calc "$k_B_einv*$T";  // thermal voltage 
 
 // bounds

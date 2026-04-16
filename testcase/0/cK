@@ -17,7 +17,7 @@ FoamFile
 
 dimensions      [0 -3 0 0 1 0 0]; // [mol/L] = [kg0⋅m-3⋅s0⋅K0⋅mol1⋅A0⋅cd0]   
  
-cBulk 0.1; 
+cBulk 1e-3; 
  
 internalField   uniform $cBulk; 
  
@@ -44,11 +44,13 @@ boundaryField
     neutralSide
     {
         type subgridZeroIonicFlux;
+        charge 1;
         value 0;
     }
     chargedSide
     {
         type subgridZeroIonicFlux;
+        charge 1;
         value 0;
     }
 } 

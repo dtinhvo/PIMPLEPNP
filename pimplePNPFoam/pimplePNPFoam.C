@@ -42,6 +42,7 @@ Author
 #include "singlePhaseTransportModel.H"
 #include "turbulenceModel.H"
 #include "pimpleControl.H"
+#include "dictWriter.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -59,6 +60,22 @@ int main(int argc, char *argv[])
 #   include "createTimeControls.H"
 
     Info<< "\nStarting time loop\n" << endl;
+    dictWriter(IOobject
+        (
+             "electricProperties",
+             mesh.time().constant(),
+             mesh,
+             IOobject::MUST_READ,
+             IOobject::NO_WRITE
+        ),"electricProperties");
+    dictWriter(IOobject
+        (
+             "blockMeshDict",
+             mesh.time().constant()/"polyMesh",
+             mesh,
+             IOobject::MUST_READ,
+             IOobject::NO_WRITE
+        ),"blockMeshDict"); 
 
     while (runTime.run())
     {

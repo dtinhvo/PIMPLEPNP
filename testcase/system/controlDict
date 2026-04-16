@@ -29,29 +29,29 @@ startTime       0;
 
 stopAt          endTime;
 
-endTime         100;
+endTime         1e-1;
 
-deltaT          0.001;
+deltaT          1e-6;
 
 writeControl    timeStep;
 
-writeInterval   10;
+writeInterval   1000;
 
 purgeWrite      0;
 
 writeFormat     ascii;
 
-writePrecision  6;
+writePrecision  20;
 
 writeCompression uncompressed;
 
 timeFormat      general;
 
-timePrecision   6;
+timePrecision   20;
 
-runTimeModifiable yes;
+runTimeModifiable no;
 
-adjustTimeStep  yes;
+adjustTimeStep  no;
 
 maxCo           5;
 InfoSwitches

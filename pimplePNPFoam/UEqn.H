@@ -3,7 +3,7 @@ fvVectorMatrix ddtUEqn(fvm::ddt(U));
 
 volVectorField MaxwellForce
 (
-    F*(cK - cCl ) * (fvc::grad(Psi_E) - E_field_ )()  
+    - F*(cK - cCl ) * (fvc::grad(Psi_E) - E_field_ )()  
 );
 const_cast <dimensionSet&> (MaxwellForce.dimensions()) /=  dimMass/dimVolume ; 
 
@@ -13,7 +13,7 @@ fvVectorMatrix HUEqn
     fvm::div(phi, U)
   + turbulence->divDevReff()
     ==
-    MaxwellForce
+    MaxwellForce /1000 //  /rho : p is /rho, also divdevreff
 );
 
 if (pimple.momentumPredictor())

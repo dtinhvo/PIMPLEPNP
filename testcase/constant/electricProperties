@@ -26,11 +26,10 @@ F 96485.33212331001;
 R 8.134;  
 
 // Case-specific scaling 
-    ScalingConstant 25;  // ratio of wall height and lambda length
+    ScalingConstant 10;  // ratio of wall height and lambda length
                         // technically a mesh control variable
     PsiDict { #include "$FOAM_CASE/0/Psi_E" } ;
        Psi0 $PsiDict.zeta; // zeta is the wall potential in this case
-       Phi $PsiDict.Phi;
        E_field_x 1e5;
        E_field E_field [ 1 1 -3 0 0 -1  0 ] ($E_field_x 0 0);
 
@@ -41,11 +40,9 @@ R 8.134;
         D 1e-9;
         T 300;
 
-        rho_bulk #calc "1000" ;  // kg/m3
-        c_bulk 0.1; // [mol/L] 
+        c_bulk 1e-3; // [mol/m3] 
     // --> calculated characteristics
-    lambda_D #calc "sqrt($epsilon_0*$epsilon_r*$k_B_einv*300/(2*$z*$z*$c_bulk*1000*$F))";
-
+    lambda_D #calc "sqrt($epsilon_0*$epsilon_r*$k_B_einv*$T/(2*$z*$z*$c_bulk*$F))";
 
 // other characters closable - time
 // (controlDict cannot #calc: bug) --> ionic time control will not be class based & not be calculated src side

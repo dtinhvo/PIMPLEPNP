@@ -96,7 +96,7 @@ Foam::subgridZeroIonicFluxFvPatchScalarField::subgridZeroIonicFluxFvPatchScalarF
     fieldTypeName_(iF.name()[0])
 {
     // re-read some vars, because improper dict init 
-    zi_ = readScalar(mesh.lookupObject<IOdictionary>("electricProperties").lookup("z")); 
+    zi_ = readScalar(mesh.lookupObject<IOdictionary>("electricProperties").lookup("z"))*readScalar(dict.lookup("charge")); 
     fvPatchField<scalar>::operator=(patchInternalField());
 }
 

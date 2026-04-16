@@ -181,7 +181,7 @@ public:
             scalarField Epatch( Psi_E_field.boundaryField()[patch().index()].snGrad() );
              
                 gradient() = -(*this ) 
-                    * zi_ * Foam::constants::chemical::electric::e.value() * Epatch / (Foam::constants::chemical::electric::k_B.value()* 300);      
+                    * zi_ * Foam::constants::chemical::electric::F.value() * Epatch / (Foam::constants::chemical::electric::R.value()* 300)/1000;      
              
             fixedGradientFvPatchScalarField::updateCoeffs();
         };
@@ -197,7 +197,7 @@ public:
                     Field<Foam::scalar>::operator=
                     (
                         ( this->patchInternalField() /* c_i,P  */)
-                        * Foam::exp( -Foam::constants::chemical::electric::e.value() * zi_* deltaPsi/ (Foam::constants::chemical::electric::k_B.value() * 300) ) 
+                        * Foam::exp( -Foam::constants::chemical::electric::F.value() * zi_* deltaPsi/ (Foam::constants::chemical::electric::R.value() * 300) ) /1000 
                     );
             
             // This will set update_ = false and force updateCoeffs(). Gradient

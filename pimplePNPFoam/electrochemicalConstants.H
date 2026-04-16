@@ -18,6 +18,10 @@ const dimensionedScalar T // [J/K] = [kg0⋅m0⋅s0⋅K1⋅mol0⋅A0⋅cd0]
             ( "temperature", 
             dimensionSet( 0, 0, 0, 1, 0, 0, 0 ),
             300);  
+const dimensionedScalar R // [J/molK] = [kg1⋅m2⋅s-2⋅K-1⋅mol-1⋅A0⋅cd0]
+            ( "gasConstant", 
+            dimensionSet(1, 2, -2, -1,-1, 0, 0),
+            8.31446261815324); 
 const dimensionedScalar epsilon_0 = dimensionedScalar  
             ( "vacuumPermittivity", 
             dimensionSet(-1, -3, 4, 0, 0, 2, 0),

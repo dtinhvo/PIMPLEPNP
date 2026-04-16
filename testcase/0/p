@@ -17,7 +17,7 @@ FoamFile
 value 1e2; 
 dimensions      [0 2 -2 0 0 0 0];
 
-internalField   uniform 1e2;
+internalField   uniform $value;
 
 boundaryField
 {
